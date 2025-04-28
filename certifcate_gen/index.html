@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4a6bff;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --background-color: #f8f9fa;
+            --card-background: #ffffff;
+            --border-color: #dee2e6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: #333;
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-background);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--secondary-color);
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(74, 107, 255, 0.2);
+        }
+
+        input:invalid {
+            border-color: var(--error-color);
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        #serial {
+            background-color: var(--background-color);
+            cursor: not-allowed;
+            color: var(--secondary-color);
+        }
+
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #3a5bef;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            body {
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 1.5rem;
+            }
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+    <script>
+        // Function to generate a random serial number when the page loads
+        function generateSerialNumber() {
+            const serial = Math.floor(10000000 + Math.random() * 90000000);
+            document.getElementById('serial').value = serial;
+        }
+
+        // Function to validate email format
+        function validateEmail() {
+            const emailInput = document.getElementById('email');
+            const emailError = document.getElementById('email-error');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (!emailRegex.test(emailInput.value)) {
+                emailInput.classList.add('error');
+                emailError.textContent = 'Please enter a valid email address (e.g., example@example.com)';
+                return false;
+            } else {
+                emailInput.classList.remove('error');
+                emailError.textContent = '';
+                return true;
+            }
+        }
+
+        // Function to validate country code (exactly 2 letters)
+        function validateCountry() {
+            const countryInput = document.getElementById('country');
+            const countryError = document.getElementById('country-error');
+            const countryRegex = /^[A-Za-z]{2}$/;
+            
+            if (!countryRegex.test(countryInput.value)) {
+                countryInput.classList.add('error');
+                countryError.textContent = 'Country code must be exactly 2 letters (e.g., TN)';
+                return false;
+            } else {
+                countryInput.classList.remove('error');
+                countryError.textContent = '';
+                return true;
+            }
+        }
+
+        // Function to validate the form before submission
+        function validateForm() {
+            const isEmailValid = validateEmail();
+            const isCountryValid = validateCountry();
+            
+            return isEmailValid && isCountryValid;
+        }
+
+        // Initialize when page loads
+        window.onload = function() {
+            generateSerialNumber();
+            
+            // Add event listeners for real-time validation
+            document.getElementById('email').addEventListener('input', validateEmail);
+            document.getElementById('country').addEventListener('input', validateCountry);
+            
+            // Add form validation on submit
+            document.querySelector('form').addEventListener('submit', function(event) {
+                if (!validateForm()) {
+                    event.preventDefault();
+                }
+            });
+
+            // Prevent right-click on serial number field
+            document.getElementById('serial').addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            });
+        };
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Certificate Generator</h2>
+        <form action="generate_cert.php" method="post">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label for="organization">Organization</label>
+                    <input type="text" id="organization" name="organization" required placeholder="e.g., FSB">
+                    <div class="tooltip">
+                        <span class="tooltiptext">Enter your organization name (e.g., FSB)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="organizational_unit">Organizational Unit</label>
+                    <input type="text" id="organizational_unit" name="organizational_unit" required placeholder="e.g., DEPARTEMENT INFO">
+                    <div class="tooltip">
+                        <span class="tooltiptext">Enter your department or unit (e.g., DEPARTEMENT INFO)</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="example@example.com">
+                    <div id="email-error" class="error-message"></div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="password">P12 File Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Enter a secure password">
+                </div>
+                <div class="form-group">
+                    <label for="validity">Certificate Validity (days)</label>
+                    <input type="number" id="validity" name="validity" required placeholder="365" min="1" max="3650">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="country">Country Code</label>
+                    <input type="text" id="country" name="country" maxlength="2" required placeholder="TN">
+                    <div id="country-error" class="error-message"></div>
+                </div>
+                <div class="form-group">
+                    <label for="serial">Serial Number</label>
+                    <input type="text" id="serial" name="serial" readonly required>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Generate Certificate</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,4 @@
+dn: o=UNIVERSITE CENTRALE,dc=certification,dc=com
+objectClass: organization
+description: UNIVERSITE CENTRALE
+o: UNIVERSITE CENTRALE

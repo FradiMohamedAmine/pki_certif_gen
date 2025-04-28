@@ -1,0 +1,13 @@
+
+dn: cn=USER NAME,o=UNIVERSITE CENTRALE,dc=certification,dc=com
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+cn: USER NAME
+description: CERTIFICAT DE TEST
+mail: username@mail.com
+o: UNIVERSITE CENTRALE
+sn: 010039
+userCertificate;binary:< file:///root/pki/certs/user/user.der
+userPassword: 123456
+
